@@ -81,14 +81,23 @@ public class CheeseController {
         for(String cheeseString:cheeseNames){
             boolean isCheese = false;
             int indexToRemove=0;
-            for(int i=0; i<cheeses.size(); i++){
-
-                if(cheeses.get(i).getName().equals(cheeseString)){
+            for(Cheese cheese:cheeses){
+                if(cheeses.get(cheeses.indexOf(cheese)).getName().equals(cheeseString)){
                     isCheese = true;
-                    indexToRemove = i;
+                    indexToRemove = cheeses.indexOf(cheese);
                     break;
                 }
+
             }
+
+//            for(int i=0; i<cheeses.size(); i++){
+//
+//                if(cheeses.get(i).getName().equals(cheeseString)){
+//                    isCheese = true;
+//                    indexToRemove = i;
+//                    break;
+//                }
+//            }
             if(isCheese) {
                 cheeses.remove(cheeses.get(indexToRemove));
             }
