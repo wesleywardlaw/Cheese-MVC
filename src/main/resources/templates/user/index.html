@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org/">
+<head th:replace = "fragments::head"></head>
+<body>
+<h1 th:text="${title}">Default Title</h1>
+<h2 style="text-align:center" th:text="'Hello ' + ${user.getUsername()} +'!'"></h2>
+<table class="table" style="width:30%">
+    <tr><th>UserID</th><th>Username</th></tr>
+    <tr th:each="user: ${users}">
+        <td th:text="${user.userID}">Key</td>
+        <td><a th:href="@{'/user/details/'+${user.userID}}" th:text="${user.username}"></a></td>
+    </tr>
+</table>
+</body>
+</html>

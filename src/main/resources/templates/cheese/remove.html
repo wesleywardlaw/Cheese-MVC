@@ -5,8 +5,8 @@
 <h1 th:text="${title}">Default Title</h1>
 <form action="remove" method="POST" >
 <div th:each="cheese: ${cheeses}">
-  <input type = "checkbox" name="cheeseNames" th:value="${cheese.getName()}" id="cheeseNames" />
-    <label  for="cheeseNames" th:text="${cheese.getName()}"></label>
+  <input type = "checkbox" name="cheeseIDs" th:value="${cheese.getCheeseID()}" id="cheeseIDs" />
+    <label  for="cheeseIDs" th:text="${cheese.getName()}"></label>
 
 </div>
     <input type="submit" value="Delete a cheese or cheeses!"/>

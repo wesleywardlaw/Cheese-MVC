@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org/">
+<head th:replace = "fragments::head"></head>
+<body>
+<h1 th:text="${title}">Default Title</h1>
+<table class="table" style="width:30%">
+<tr><th>Username</th><th>Email</th><th>Joined</th></tr>
+<tr>
+    <td th:text="${user.username}">Key</td>
+    <td th:text="${user.email}">Key</td>
+    <td th:text="${user.createdAt}">Key</td>
+</tr>
+</table>
+
+</body>
+</html>

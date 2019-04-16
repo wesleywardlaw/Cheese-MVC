@@ -2,33 +2,31 @@ package com.launchcode.cheese.controllers;
 
 
 import com.launchcode.cheese.models.Cheese;
+import com.launchcode.cheese.models.CheeseRating;
+import com.launchcode.cheese.models.CheeseType;
+import com.launchcode.cheese.models.data.CheeseManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping(value = "cheese")
 public class CheeseController {
-    private static ArrayList<Cheese> cheeses = new ArrayList<>();
-    static{
-        Cheese cheddar = new Cheese("Cheddar", "Orange");
-        Cheese feta = new Cheese("Feta", "White");
-        Cheese american = new Cheese("American", "From America");
-        cheeses.add(cheddar);
-        cheeses.add(feta);
-        cheeses.add(american);
-
-
-    }
+//    private static ArrayList<Cheese> cheeses = new ArrayList<>();
+//    static{
+//        Cheese cheddar = new Cheese("Cheddar", "Orange");
+//        Cheese feta = new Cheese("Feta", "White");
+//        Cheese american = new Cheese("American", "From America");
+//        cheeses.add(cheddar);
+//        cheeses.add(feta);
+//        cheeses.add(american);
+//    }
     @RequestMapping
     public String index(Model model){
-        model.addAttribute("cheeses", cheeses);
+        model.addAttribute("cheeses", CheeseManager.getAll());
         model.addAttribute("title", "My Cheese");
         return "cheese/index";
     }
@@ -43,12 +41,15 @@ public class CheeseController {
     @RequestMapping(value="add")
     public String form(Model model){
         model.addAttribute("title", "Add a Cheese");
+        model.addAttribute(new Cheese());
+        model.addAttribute("cheeseTypes", CheeseType.values());
+        model.addAttribute("cheeseRatings", CheeseRating.values());
         return "cheese/add";
     }
 
     @RequestMapping(value="remove")
     public String remove(Model model){
-        model.addAttribute("cheeses", cheeses);
+        model.addAttribute("cheeses", CheeseManager.getAll());
         model.addAttribute("title", "Remove Cheeses");
         return "cheese/remove";
     }
@@ -69,41 +70,80 @@ public class CheeseController {
         //redirect to list of cheeses (index)
 
     @RequestMapping(value="add", method=RequestMethod.POST)
-    public String postForm(@RequestParam(name="name", required=false) String name, @RequestParam(name="description", required=false) String description ){
-        cheeses.add(new Cheese(name,description));
+    public String postForm(@ModelAttribute @Valid Cheese newCheese, Errors errors, Model model){
+//        cheeses.add(new Cheese(name,description));
+        if(errors.hasErrors()){
+            model.addAttribute("title", "Add a Cheese");
+            model.addAttribute("cheeseTypes", CheeseType.values());
+            model.addAttribute("cheeseRatings", CheeseRating.values());
+            return "cheese/add";
+        }
+        CheeseManager.add(newCheese);
         return "redirect:";
     }
     @RequestMapping(value="remove", method=RequestMethod.POST)
-    public String postForm(@RequestParam(name="cheeseNames", required=false) String[] cheeseNames){
-        if(cheeseNames==null){
+    public String postForm(@RequestParam(name="cheeseIDs", required=false) int[] cheeseIDs){
+        if(cheeseIDs==null){
             return "redirect:remove";
         }
-        for(String cheeseString:cheeseNames){
-            boolean isCheese = false;
-            int indexToRemove=0;
-            for(Cheese cheese:cheeses){
-                if(cheeses.get(cheeses.indexOf(cheese)).getName().equals(cheeseString)){
-                    isCheese = true;
-                    indexToRemove = cheeses.indexOf(cheese);
-                    break;
-                }
-
-            }
-
-//            for(int i=0; i<cheeses.size(); i++){
-//
-//                if(cheeses.get(i).getName().equals(cheeseString)){
+//        for(String cheeseString:cheeseNames){
+//            boolean isCheese = false;
+//            int indexToRemove=0;
+//            for(Cheese cheese:cheeses){
+//                if(cheeses.get(cheeses.indexOf(cheese)).getName().equals(cheeseString)){
 //                    isCheese = true;
-//                    indexToRemove = i;
+//                    indexToRemove = cheeses.indexOf(cheese);
 //                    break;
 //                }
+//
 //            }
-            if(isCheese) {
-                cheeses.remove(cheeses.get(indexToRemove));
-            }
-        }
+//
+////            for(int i=0; i<cheeses.size(); i++){
+////
+////                if(cheeses.get(i).getName().equals(cheeseString)){
+////                    isCheese = true;
+////                    indexToRemove = i;
+////                    break;
+////                }
+////            }
+//            if(isCheese) {
+//                cheeses.remove(cheeses.get(indexToRemove));
+//            }
+//        }
+
+        CheeseManager.removeMany(cheeseIDs);
 
         return "redirect:";
+    }
+    @RequestMapping(value="edit/{cheeseID}")
+    public String displayEditForm(Model model, @PathVariable int cheeseID){
+        model.addAttribute("action", "../edit");
+        model.addAttribute("cheese",CheeseManager.getCheeseByID(cheeseID));
+        model.addAttribute("cheeseTypes", CheeseType.values());
+        model.addAttribute("cheeseRatings", CheeseRating.values());
+
+        return "cheese/edit";
+    }
+    @RequestMapping(value="edit", method=RequestMethod.POST)
+    public String processEditForm(int cheeseID, @ModelAttribute @Valid Cheese newCheese, Errors errors, Model model){
+
+        if(errors.hasErrors()){
+            model.addAttribute("action", "edit");
+            model.addAttribute("keepID", CheeseManager.getCheeseByID(cheeseID).getCheeseID());
+            model.addAttribute("cheeseTypes", CheeseType.values());
+            model.addAttribute("cheeseRatings", CheeseRating.values());
+
+            return "cheese/edit";
+        }
+        else{
+            Cheese cheese = CheeseManager.getCheeseByID(cheeseID);
+            cheese.setName(newCheese.getName());
+            cheese.setDescription(newCheese.getDescription());
+            cheese.setType(newCheese.getType());
+            cheese.setRating(newCheese.getRating());
+            return "redirect:";
+        }
+
     }
 
 
