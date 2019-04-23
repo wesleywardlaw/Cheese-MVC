@@ -1,0 +1,18 @@
+package com.launchcode.cheese.models.data;
+
+import com.launchcode.cheese.models.Cheese;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import javax.transaction.Transactional;
+
+@Repository
+@Transactional
+public interface CheeseDAO extends CrudRepository<Cheese, Integer> {
+    //custom query methods go in here
+    default void deleteMany(int[] cheeseIDs){
+        for(int cheeseID: cheeseIDs){
+            delete(cheeseID);
+        }
+    }
+}

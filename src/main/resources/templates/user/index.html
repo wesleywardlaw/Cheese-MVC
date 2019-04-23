@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://thymeleaf.org/">
 <head th:replace = "fragments::head"></head>
 <body>
+<nav th:replace = "fragments::nav"></nav>
 <h1 th:text="${title}">Default Title</h1>
 <h2 style="text-align:center" th:text="'Hello ' + ${user.getUsername()} +'!'"></h2>
 <table class="table" style="width:30%">

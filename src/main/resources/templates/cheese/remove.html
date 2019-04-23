@@ -2,14 +2,15 @@
 <html lang="en" xmlns:th="http://thymeleaf.org/">
 <head th:replace = "fragments::head"></head>
 <body>
+<nav th:replace = "fragments::nav"></nav>
 <h1 th:text="${title}">Default Title</h1>
-<form action="remove" method="POST" >
-<div th:each="cheese: ${cheeses}">
-  <input type = "checkbox" name="cheeseIDs" th:value="${cheese.getCheeseID()}" id="cheeseIDs" />
-    <label  for="cheeseIDs" th:text="${cheese.getName()}"></label>
+<form action="remove" method="POST"  style="width:30%; margin:0 auto">
+<div class="form-check" th:each="cheese: ${cheeses}">
+  <input class="form-check-input" type = "checkbox" name="cheeseIDs" th:value="${cheese.getCheeseID()}" id="cheeseIDs" />
+    <label class="form-check-label"  for="cheeseIDs" th:text="${cheese.getName()}"></label>
 
 </div>
-    <input type="submit" value="Delete a cheese or cheeses!"/>
+    <input class="btn btn-primary" type="submit" value="Delete a cheese or cheeses!"/>
 </form>
 </body>
 </html>

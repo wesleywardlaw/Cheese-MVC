@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org/">
+<head th:replace = "fragments::head"></head>
+<body>
+<nav th:replace = "fragments::nav"></nav>
+<h1 th:text="${title}" style="margin-top: 20px">Default Title</h1>
+<p th:unless="${categories.size()}">No Categories</p>
+<div style="margin:0 auto">
+<ul style="text-align:center; list-style-type:none">
+    <li th:each="category:${categories}" th:text="${category.name}"></li>
+</ul>
+</div>
+
+</body>
+</html>

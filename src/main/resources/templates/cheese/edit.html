@@ -2,6 +2,7 @@
 <html lang="en" xmlns:th="http://thymeleaf.org/">
 <head th:replace = "fragments::head"></head>
 <body>
+<nav th:replace = "fragments::nav"></nav>
 <h2  th:unless="${keepID!=null}" style="text-align:center; margin-top: 20px" th:text="'Edit ' + ${cheese.getName()} +' ID=' +${cheese.getCheeseID()}"></h2>
 <h2  th:if="${keepID!=null}" style="text-align:center; margin-top: 20px" th:text="'Edit ' + ${cheese.getName()} +' ID=' +${keepID}"></h2>
 
@@ -17,9 +18,10 @@
         <span th:errors="*{description}" class="error"></span>
     </div>
     <div class="form-group">
-        <label th:for="type">Type</label>
-        <select th:field = "*{type}">
-            <option th:each="cheeseType:${cheeseTypes}" th:text="${cheeseType.name}" th:value="${cheeseType}" th:selected="${cheeseType==cheese.type}"></option>
+        <label th:for="categoryID">Type</label>
+        <select id="categoryID" name="categoryID">
+            <option th:unless="${keepCategoryID!=null}" th:each="category:${categories}" th:text="${category.name}" th:value="${category.id}" th:selected="${cheese.category.id == category.id}"></option>
+            <option th:if="${keepCategoryID!=null}" th:each="category:${categories}" th:text="${category.name}" th:value="${category.id}" th:selected="${keepCategoryID == category.id}"></option>
         </select>
     </div>
     <div class="form-group">
@@ -28,8 +30,8 @@
             <option th:each="cheeseRating:${cheeseRatings}" th:text="${cheeseRating.rating}" th:value="${cheeseRating}"></option>
         </select>
     </div>
-    <input th:unless="${keepID!=null}" type="hidden" th:value="${cheese.cheeseID}" name="cheeseID" />
-    <input th:if="${keepID!=null}" type="hidden" th:value="${keepID}" name="cheeseID" />
+    <input type="hidden" th:value="${cheese.cheeseID}" name="cheeseID" />
+<!--    <input th:if="${keepCheeseID!=null}" type="hidden" th:value="${keepID}" name="cheeseID" />-->
     <input class="btn btn-primary" type="submit" value="Edit the cheese!"/>
 </form>
 </body>
